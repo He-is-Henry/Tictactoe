@@ -1,0 +1,195 @@
+/* General body styles */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --background-color: #e3d7b5; /* Beige color for board background */
+    --x-color: yellow; /* Light blue color for Xs */
+    --o-color: #ffffff; /* White color for Os */
+    --accent-color: #3b96c8; /* Darker blue for accents */
+    --text-color: #5ab7e6;
+    --border-color: #ffffff;
+    --dark-color: #0d0d17;
+}
+
+body {
+    color: var(--text-color);
+}
+
+/* overlay*/
+.overlay {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 100;
+    background: linear-gradient(225deg, var(--dark-color), var(--accent-color));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    gap: 20px;
+}
+
+.pic {
+    width: 70%;
+    margin: 0 auto;
+    margin-top: 20px;
+    border-radius: 50px;
+}
+
+.modes {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    gap: 10px;
+    width: 100vw;
+}
+button {
+    background-color: var(--accent-color);
+    display: block;
+    width: 150px;
+    height: 50px;
+    margin: 0 auto;
+    color: var(--text-color);
+    text-align: center;
+    background: linear-gradient(45deg, var(--dark-color), var(--accent-color));
+    color: var(--o-color); /* Text color */
+    border: 2px solid var(--border-color);
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+button:hover {
+    transform: scale(1.05); /* Subtle zoom effect on hover */
+}
+
+.heading {
+    font-family: fantasy;
+    text-align: center;
+    color: var(--accent-color);
+    z-index: 1000;
+    position: fixed;
+    top: 20px;
+}
+
+/* Tic Tac Toe board styles */
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    position: relative;
+    z-index: 1;
+    gap: 0;
+}
+
+/* Individual cell styles */
+.cell {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px; /* Larger font size for visibility */
+    background-color: white; /* Background color for cells */
+    cursor: pointer; /* Pointer cursor for clickable cells */
+    transition: background-color 0.3s; /* Smooth transition for hover effects */
+    background-color: var(--text-color);
+    margin: 0;
+}
+
+.cell:nth-child(2),
+.cell:nth-child(5),
+.cell:nth-child(8) {
+    border-left: 5px solid #333;
+    border-right: 5px solid #333;
+}
+
+.cell:nth-child(4),
+.cell:nth-child(5),
+.cell:nth-child(6) {
+    border-top: 5px solid #333;
+    border-bottom: 5px solid #333;
+}
+
+/* Hover effect for cells */
+.cell:hover {
+    background-color: #e0e0e0; /* Light grey background on hover */
+}
+
+/* Styles for filled cells */
+.cell.x {
+    color: var(--x-color); /* Color for player X */
+}
+
+.cell.o {
+    color: var(--o-color); /* Color for player O */
+}
+
+.wrapper {
+    width: 75%;
+    height: 150px;
+    position: absolute;
+    display: none;
+    background: linear-gradient(135deg, #ffffff, #f0f0f0);
+}
+
+.wrapper.show {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+    gap: 15px;
+    box-shadow: 0px 60px 40px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    width: 300px;
+}
+
+.message {
+    font-size: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.winner {
+    font-size: 65px;
+    transform: smooth;
+}
+
+.home-button {
+    color: black;
+    top: 0;
+    position: fixed;
+    left: 10px;
+    font-size: 50px;
+}
+
+.home {
+    font-size: 20px;
+    color: var(--accent-color);
+    margin-top: 0;
+    display: block;
+}

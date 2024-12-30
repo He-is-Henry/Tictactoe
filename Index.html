@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="style.css" type="text/css" media="all" />
+        <title>Tic Tac Toe</title>
+    </head>
+    <body>
+        <p class="home-button">
+            &#x2302;
+            <span class="home">Home</span>
+        </p>
+        
+        <h1 class="heading" id="heading">Tic Tac Toe</h1>
+        <div class="overlay" id="overlay">
+            <img
+                src="img/tictactoe.jpeg"
+                alt="tictactoe"
+                class="pic"
+                id="pic"
+            />
+            <div class="modes">
+                <button class="multi-player" id="multi-player">
+                    2 Players
+                </button>
+                <button class="single-player" id="single-player">
+                    1 Player
+                </button>
+            </div>
+        </div>
+        <div class="wrapper">
+            <div class="message" id="message"></div>
+            <button class="play-again" id="play-again">Play Again</button>
+        </div>
+        <div class="board" id="board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+        <script src="script.js"></script>
+    </body>
+</html>
