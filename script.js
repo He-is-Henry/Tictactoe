@@ -186,6 +186,6 @@ function startSinglePlayer() {
 
 document.querySelector(".home-button").addEventListener("click", () => {
     overlay.style.display = "flex";
-    heading.innerHTML ="Tictactoe"
+    heading.innerHTML ="Tic Tac Toe"
     
 });
