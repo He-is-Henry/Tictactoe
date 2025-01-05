@@ -9,6 +9,7 @@ const cellsArray = Array.from(cells);
 const message = document.getElementById("message");
 const wrapper = document.querySelector(".wrapper");
 const playAgain = document.querySelector(".play-again");
+let isSinglePlayer = false;
 // Define winning combinations for Tic Tac Toe
 const winningConditions = [
     [0, 1, 2], // Row 1
@@ -20,28 +21,60 @@ const winningConditions = [
     [0, 4, 8], // Diagonal
     [2, 4, 6] // Diagonal
 ];
-
+function getComputerChoice() {
+    let attempts = 0;
+    let randomCell;
+    while (attempts < 10) {
+        randomCell = Math.floor(Math.random() * 9);
+        if (cellsArray[randomCell].textContent === "") {
+            cellsArray[randomCell].textContent = "O";
+            console.log("Computer move: 0");
+            cellsArray[randomCell].classList.add("o");
+            currentPlayer = "X";
+            updateHeading();
+            const winner = checkWinner();
+            if (winner) {
+                console.log(`${winner} is the winner`);
+                setTimeout(function () {
+                    wrapper.classList.add("show");
+                    message.textContent = `Player ${winner} wins`;
+                }, 1000);
+            }
+            const tie = checkTie();
+            if (tie) {
+                setTimeout(function () {
+                    wrapper.classList.add("show");
+                    message.textContent = `It's a tie`;
+                }, 1000);
+                return;
+            }
+            break;
+        }
+        attempts++;
+    }
+}
 function disableClicks() {
     cells.forEach(cell => cell.removeEventListener("click", handleClick)); // Remove event listeners
     setTimeout(() => {
         cells.forEach(cell => cell.addEventListener("click", handleClick)); // Re-enable event listeners after delay
-    }, 550);
+    }, 200);
 }
 
 function handleClick(event) {
     const clickedCell = event.target;
-    console.log("Cell clicked:", clickedCell);
     if (clickedCell.textContent !== "") return;
-    disableClicks();
-    clickedCell.textContent = currentPlayer;
+
     if (currentPlayer === "X") {
+        clickedCell.textContent = "X";
         clickedCell.classList.add("x");
-    } else {
+        currentPlayer = "O";
+    } else if (!isSinglePlayer && currentPlayer === "O") {
+        clickedCell.textContent = "O";
         clickedCell.classList.add("o");
+        currentPlayer = "X";
     }
-    currentPlayer = currentPlayer === "X" ? "O" : "X";
+    disableClicks();
     updateHeading();
-    console.log(`it's player ${currentPlayer} turn`);
     const winner = checkWinner();
     if (winner) {
         console.log(`${winner} is the winner`);
@@ -58,6 +91,9 @@ function handleClick(event) {
             message.textContent = `It's a tie`;
         }, 1000);
         return;
+    }
+    if (isSinglePlayer && currentPlayer === "O") {
+        setTimeout(getComputerChoice, 500);
     }
 }
 
@@ -86,7 +122,6 @@ function checkTie() {
     }
 }
 
-multiPlayerButton.addEventListener("click", startMultiplayerMode);
 function updateHeading() {
     heading.textContent = `Player ${currentPlayer}'s  turn `;
 }
@@ -114,70 +149,12 @@ function startMultiplayerMode() {
 }
 
 singlePlayerButton.addEventListener("click", startSinglePlayer);
+multiPlayerButton.addEventListener("click", startMultiplayerMode);
 
 function startSinglePlayer() {
+    isSinglePlayer = true;
     resetGame();
     overlay.style.display = "none";
-    function handleClick(event) {
-        const clickedCell = event.target;
-        if (clickedCell.textContent !== "" || currentPlayer === "O") return;
-        disableClicks();
-        clickedCell.textContent = "X";
-        clickedCell.classList.add("x");
-        currentPlayer = "O";
-        updateHeading();
-        const winner = checkWinner();
-        if (winner) {
-            console.log(`${winner} is the winner`);
-            setTimeout(function () {
-                wrapper.classList.add("show");
-                message.textContent = `Player ${winner} wins`;
-            }, 1000);
-            return;
-        }
-        const tie = checkTie();
-        if (tie) {
-            setTimeout(function () {
-                wrapper.classList.add("show");
-                message.textContent = `It's a tie`;
-            }, 1000);
-            return;
-        }
-        setTimeout(getComputerChoice, 500);
-    }
-
-    function getComputerChoice() {
-        let attempts = 0;
-        let randomCell;
-        while (attempts < 10) {
-            const randomNumber = Math.random();
-            randomCell = Math.floor(randomNumber * 9);
-            if (cellsArray[randomCell].textContent === "") {
-                cellsArray[randomCell].textContent = "O";
-                cellsArray[randomCell].classList.add("o");
-                currentPlayer = "X";
-                updateHeading();
-                const winner = checkWinner();
-                if (winner) {
-                    console.log(`${winner} is the winner`);
-                    setTimeout(function () {
-                        wrapper.classList.add("show");
-                        message.textContent = `Player ${winner} wins`;
-                    }, 1000);
-                }
-                const tie = checkTie();
-                if (tie) {
-                    setTimeout(function () {
-                        wrapper.classList.add("show");
-                        message.textContent = `It's a tie`;
-                    }, 1000);
-                    return;
-                }
-                break;
-            }
-            attempts++;
-        }
-    }
 
     cells.forEach(cell => {
         cell.addEventListener("click", handleClick); // Attach click event to each cell
@@ -186,6 +163,6 @@ function startSinglePlayer() {
 
 document.querySelector(".home-button").addEventListener("click", () => {
     overlay.style.display = "flex";
-    heading.innerHTML ="Tic Tac Toe"
-    
+    heading.innerHTML = "Tic Tac Toe";
+    isSinglePlayer = false;
 });
