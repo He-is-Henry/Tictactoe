@@ -22,6 +22,16 @@ const winningConditions = [
     [2, 4, 6] // Diagonal
 ];
 function getComputerChoice() {
+    let move;
+    move = canBlock("X");
+    if (move !== null) {
+        cellsArray[move].textContent = "O";
+        cellsArray[move].classList.add("o");
+        updateHeading();
+        currentPlayer = "X";
+        checkStatus();
+        return;
+    }
     let attempts = 0;
     let randomCell;
     while (attempts < 10) {
@@ -32,26 +42,23 @@ function getComputerChoice() {
             cellsArray[randomCell].classList.add("o");
             currentPlayer = "X";
             updateHeading();
-            const winner = checkWinner();
-            if (winner) {
-                console.log(`${winner} is the winner`);
-                setTimeout(function () {
-                    wrapper.classList.add("show");
-                    message.textContent = `Player ${winner} wins`;
-                }, 1000);
-            }
-            const tie = checkTie();
-            if (tie) {
-                setTimeout(function () {
-                    wrapper.classList.add("show");
-                    message.textContent = `It's a tie`;
-                }, 1000);
-                return;
-            }
+            checkStatus();
             break;
         }
         attempts++;
     }
+}
+
+function resetGame() {
+    cells.forEach(cell => {
+        cell.textContent = "";
+        cell.classList.remove("x", "o");
+        cell.classList.remove("winner");
+        updateHeading();
+        currentPlayer = "X";
+        wrapper.classList.remove("show"); // Hide the wrapper
+        message.textContent = ""; // Clear the
+    });
 }
 function disableClicks() {
     cells.forEach(cell => cell.removeEventListener("click", handleClick)); // Remove event listeners
@@ -59,44 +66,6 @@ function disableClicks() {
         cells.forEach(cell => cell.addEventListener("click", handleClick)); // Re-enable event listeners after delay
     }, 200);
 }
-
-function handleClick(event) {
-    const clickedCell = event.target;
-    if (clickedCell.textContent !== "") return;
-
-    if (currentPlayer === "X") {
-        clickedCell.textContent = "X";
-        clickedCell.classList.add("x");
-        currentPlayer = "O";
-    } else if (!isSinglePlayer && currentPlayer === "O") {
-        clickedCell.textContent = "O";
-        clickedCell.classList.add("o");
-        currentPlayer = "X";
-    }
-    disableClicks();
-    updateHeading();
-    const winner = checkWinner();
-    if (winner) {
-        console.log(`${winner} is the winner`);
-        setTimeout(function () {
-            wrapper.classList.add("show");
-            message.textContent = `Player ${winner} wins`;
-        }, 1000);
-        return;
-    }
-    const tie = checkTie();
-    if (tie) {
-        setTimeout(function () {
-            wrapper.classList.add("show");
-            message.textContent = `It's a tie`;
-        }, 1000);
-        return;
-    }
-    if (isSinglePlayer && currentPlayer === "O") {
-        setTimeout(getComputerChoice, 500);
-    }
-}
-
 function checkWinner() {
     for (let i = 0; i < winningConditions.length; i++) {
         const [a, b, c] = winningConditions[i];
@@ -121,22 +90,32 @@ function checkTie() {
         return Array.from(cells).every(cell => cell.textContent !== "");
     }
 }
+function handleClick(event) {
+    const clickedCell = event.target;
+    if (clickedCell.textContent !== "") return;
+
+    if (currentPlayer === "X") {
+        clickedCell.textContent = "X";
+        clickedCell.classList.add("x");
+        currentPlayer = "O";
+    } else if (!isSinglePlayer && currentPlayer === "O") {
+        clickedCell.textContent = "O";
+        clickedCell.classList.add("o");
+        currentPlayer = "X";
+    }
+    disableClicks();
+    updateHeading();
+    checkStatus();
+    const winner = checkWinner();
+    if (isSinglePlayer && currentPlayer === "O" && !winner) {
+        setTimeout(getComputerChoice, 500);
+    }
+}
 
 function updateHeading() {
     heading.textContent = `Player ${currentPlayer}'s  turn `;
 }
-function resetGame() {
-    cells.forEach(cell => {
-        cell.textContent = "";
-        cell.classList.remove("x", "o");
-        cell.classList.remove("winner");
-        updateHeading();
-        currentPlayer = "X";
-    });
 
-    wrapper.classList.remove("show"); // Hide the wrapper
-    message.textContent = ""; // Clear the message
-}
 playAgain.addEventListener("click", resetGame);
 function startMultiplayerMode() {
     resetGame();
@@ -166,3 +145,39 @@ document.querySelector(".home-button").addEventListener("click", () => {
     heading.innerHTML = "Tic Tac Toe";
     isSinglePlayer = false;
 });
+
+function canBlock(player) {
+    for (let condition of winningConditions) {
+        const [a, b, c] = condition;
+        const cellsContent = [
+            cellsArray[a].textContent,
+            cellsArray[b].textContent,
+            cellsArray[c].textContent
+        ];
+        if (
+            cellsContent.filter(cell => cell === player).length === 2 &&
+            cellsContent.includes("")
+        ) {
+            return condition[cellsContent.indexOf("")];
+        }
+    }
+    return null;
+}
+
+function checkStatus() {
+    const tie = checkTie();
+    if (tie) {
+        setTimeout(function () {
+            wrapper.classList.add("show");
+            message.textContent = `It's a tie`;
+        }, 1000);
+    }
+    const winner = checkWinner();
+    if (winner) {
+        console.log(`${winner} is the winner`);
+        setTimeout(function () {
+            wrapper.classList.add("show");
+            message.textContent = `Player ${winner} wins`;
+        }, 1000);
+    }
+}
